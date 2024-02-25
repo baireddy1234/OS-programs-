@@ -1,0 +1,23 @@
+import time
+
+# Modify the upload_file function in the server side code to include versioning
+def upload_file(file_path, server_url):
+    files = {'file': open(file_path, 'rb')}
+    timestamp = int(time.time())
+    response = requests.post(server_url + f"/upload/{timestamp}", files=files)
+    print(response.text)
+
+# Modify the download_file function in the client side code to handle fetching the latest version
+def download_file(filename, server_url):
+    response = requests.get(server_url + f"/latest/{filename}")
+    if response.status_code == 200:
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        print(f"Latest version of file {filename} downloaded successfully")
+    else:
+        print(f"Failed to download latest version of file {filename}")
+
+if _name_ == "_main_":
+    server_url = "http://localhost:5000"
+    upload_file("example.txt", server_url)
+    download_file("example.txt", server_url)
